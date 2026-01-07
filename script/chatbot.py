@@ -4,7 +4,7 @@ import os, prompt # put your prompt in prompt.py
 
 app = Flask(__name__)
 model = os.getenv("OLLAMA_MODEL") or 'gpt-oss:120b'
-port = int(os.getenv("PORT" or 5000))
+port = int(os.getenv("PORT") or 5000)
 
 @app.route('/chat', methods=['POST'])
 def chat_endpoint():
