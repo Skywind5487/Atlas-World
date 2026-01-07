@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Atlas-World Chatbot</title>
+  <style>
+    /* 全局設定：重置與字體 */
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f0f2f5; /* 柔和的背景色 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    /* 主容器：卡片式設計 */
+    .container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px; /* 限制最大寬度 */
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: #2c3e50;
+    }
+
+    /* 表單元素樣式 */
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    textarea, input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical; /* 允許垂直拉伸 */
+      min-height: 100px;
+    }
+
+    /* 焦點狀態：當用戶點擊輸入框時 */
+    textarea:focus, input:focus {
+      border-color: #4a90e2;
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+    /* 按鈕樣式 */
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* 回應區域樣式 */
+    #response {
+      margin-top: 1.5rem;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #4a90e2; /* 左側藍色線條裝飾 */
+      border-radius: 4px;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #444;
+      min-height: 50px; /* 避免內容為空時完全消失 */
+    }
+    
+    /* 當回應內容是 Error 時的樣式 (可選) */
+    #response:contains("Error") {
+        border-left-color: #e74c3c;
+        background-color: #fdedec;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Atlas-World Chatbot</h1>
+    
+    <label for="userContent">用戶內容</label>
+    <textarea id="userContent" placeholder="請輸入您想說的話...">你好，請簡短介紹 Atlas-World。</textarea>
+    
+    <label for="systemPrompt">系統提示（選填）</label>
+    <input id="systemPrompt" placeholder="例如：你是一個專業的助手...">
+    
+    <button id="sendBtn">送出訊息</button>
+
+    <div id="response">等待輸入...</div>
+  </div>
+
+  <script>
+    // JS 完全保持原樣
+    document.getElementById('sendBtn').addEventListener('click', async () => {
+      const userContent = document.getElementById('userContent').value;
+      const systemPrompt = document.getElementById('systemPrompt').value;
+      const resDiv = document.getElementById('response');
+      resDiv.textContent = '處理中...'; //稍微改了一下文字讓體驗好一點
+
+      try {
+        const resp = await fetch('/chat', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({userContent, systemPrompt})
+        });
+        const data = await resp.json();
+        if (data.response) resDiv.textContent = data.response;
+        else if (data.error) resDiv.textContent = 'Error: ' + data.error;
+        else resDiv.textContent = JSON.stringify(data);
+      } catch (err) {
+        resDiv.textContent = 'Fetch error: ' + err;
+      }
+    });
+  </script>
+</body>
+</html>
