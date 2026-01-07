@@ -1,10 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from ollama import chat, ChatResponse
-import os, prompt # put your prompt in prompt.py
+import os# , prompt  put your prompt in prompt.py
 
-app = Flask(__name__)
+# Ensure Flask can find the templates folder even when this script
+# is executed from the project root or another working directory.
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+template_dir = os.path.join(base_dir, 'templates')
+app = Flask(__name__, template_folder=template_dir)
 model = os.getenv("OLLAMA_MODEL") or 'gpt-oss:120b'
-port = int(os.getenv("PORT" or 5000))
+port = int(os.getenv("PORT") or 5000)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 @app.route('/chat', methods=['POST'])
 def chat_endpoint():
@@ -43,4 +51,4 @@ def chat_endpoint():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=port)
