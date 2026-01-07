@@ -1,3 +1,3 @@
-rem winget install --id=astral-sh.uv -e
-rem winget install -e --id Microsoft.VisualStudioCode 
+winget install --id=astral-sh.uv -e
+winget install -e --id Microsoft.VisualStudioCode 
 uv sync
