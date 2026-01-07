@@ -95,4 +95,4 @@ def chat_endpoint():
 if __name__ == '__main__':
     # 注意：debug=True 會自動啟動 Reloader 導致兩次 Prompt
     # 這裡關閉它以確保只需輸入一次模型配置
-    app.run(debug=True, use_reloader=True, host='0.0.0.0', port=port)
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=port)
